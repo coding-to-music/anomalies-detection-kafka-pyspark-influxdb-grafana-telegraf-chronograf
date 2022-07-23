@@ -1,0 +1,21 @@
+{
+  "name": "anomalies-detection-kafka-pyspark-influxdb-grafana-telegraf-chronograf",
+  "version": "1.0.0",
+  "description": "This project serves as an assignment project for the Open Source Technologies / Stream Mining subjects.",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "git add . && git commit -m Build && git push",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/medaharrat/anomalies-detection.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/medaharrat/anomalies-detection/issues"
+  },
+  "homepage": "https://github.com/medaharrat/anomalies-detection#readme"
+}

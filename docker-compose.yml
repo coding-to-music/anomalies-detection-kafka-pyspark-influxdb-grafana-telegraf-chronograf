@@ -1,0 +1,134 @@
+version: '3'
+
+services:
+  # Kafka Service Running with Zookeeper
+  kafka:
+    image: spotify/kafka
+    container_name: kafka
+    hostname: kafka
+    ports:
+      - 9092:9092
+    environment:
+      ADVERTISED_HOST: kafka
+      ADVERTISED_PORT: 9092
+      AUTO_CREATE_TOPICS: "true"
+    command: >
+        bash -c
+        "(sleep 15s &&
+        /opt/kafka_2.11-0.10.1.0/bin/kafka-topics.sh
+        --create
+        --zookeeper
+        localhost:2181 --replication-factor 1 --partitions 1 --topic SWAT &) && (supervisord -n)"
+    healthcheck:
+      test: ['CMD-SHELL', '/opt/kafka_2.11-0.10.1.0/bin/kafka-topics.sh --zookeeper localhost:2181 --list']
+      interval: 20s
+      timeout: 5s
+      retries: 3
+    networks:
+      - swat-network
+          
+  # Jupyter Environment with PySpark
+  pyspark:
+    image: pyspark
+    build: ./spark
+    container_name: pyspark
+    ports:
+      - 8888:8888
+    volumes:
+      - ./data:/data
+      - ./models:/models
+      - ./transformers:/transformers
+    networks:
+      - swat-network
+
+  # Framework for data visualization
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on: 
+      - influxdb
+    networks:
+      - swat-network
+
+  # Influx DB Server
+  influxdb:
+    image: bitnami/influxdb
+    container_name: influxdb
+    restart: always
+    ports:
+     - 8086:8086
+    volumes:
+      - influxdb:/var/lib/influxdb
+    environment:
+      - INFLUXDB_DB=${INFLUXDB_DB}
+      - INFLUXDB_USER_BUCKET=${DEFAULT_BUCKET}
+      - INFLUXDB_ADMIN_USER=${ADMIN_USERNAME}
+      - INFLUXDB_ADMIN_USER_PASSWORD=${ADMIN_PASSWORD}
+      - INFLUXDB_ADMIN_USER_TOKEN=${AUTH_TOKEN}
+    networks:
+      - swat-network
+
+  # Telegraf to collect monitoring metrics
+  telegraf:
+    image: telegraf
+    container_name: telegraf
+    restart: always
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    environment:
+      - HOST=${INFLUXDB_HOST}
+      - TOKEN=${AUTH_TOKEN}
+      - ORG=${DEFAULT_ORGANIZATION}
+      - BUCKET=${MONITORING_BUCKET}
+    depends_on:
+      - influxdb
+    links:
+      - influxdb
+    ports:
+      - 8125:8125
+    networks:
+      - swat-network
+
+  # Chronograf is a visualization tool for time series data in InfluxDB
+  chronograf:
+    image: chronograf:latest
+    hostname: chronograf
+    container_name: chronograf
+    ports:
+      - 8080:8080
+    links:
+      - influxdb
+    depends_on:
+      - influxdb
+    volumes:
+      - chronograf:/var/lib/chronograf
+    environment:
+      - PORT=8080
+    networks:
+      - swat-network
+
+  # Python Environement running a KafkaProducer program
+  producer:      
+    image: producer
+    container_name: producer
+    build: ./kafka
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - swat-network
+
+networks:
+  swat-network:
+    
+volumes:
+  grafana:
+  influxdb:
+  chronograf:
