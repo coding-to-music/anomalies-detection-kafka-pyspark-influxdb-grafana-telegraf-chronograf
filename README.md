@@ -139,13 +139,13 @@ While running a node app with Docker, there is an error 137:
 The command '/bin/sh -c npm install' returned a non-zero code: 137
 ```
 
-This means a out of memory error.
+This means an out-of-memory error.
 
-To fix, you can add more RAM.
+To fix it, you can add more RAM.
 
-Or you can add more swap memory (FREE!). Swap memory uses part of your harddisk for temporary memory.
+Or you can add more swap memory (FREE!). Swap memory uses part of your hard disk for temporary memory.
 
-These steps are exactly the same from a previous guide:
+These steps are exactly the same as a previous guide:
 
 ```
 # Confirm you have no swap
