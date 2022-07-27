@@ -1,4 +1,4 @@
-version: '3'
+version: "3.7"
 
 services:
   # Kafka Service Running with Zookeeper
@@ -13,20 +13,24 @@ services:
       ADVERTISED_PORT: 9092
       AUTO_CREATE_TOPICS: "true"
     command: >
-        bash -c
-        "(sleep 15s &&
-        /opt/kafka_2.11-0.10.1.0/bin/kafka-topics.sh
-        --create
-        --zookeeper
-        localhost:2181 --replication-factor 1 --partitions 1 --topic SWAT &) && (supervisord -n)"
+      bash -c
+      "(sleep 15s &&
+      /opt/kafka_2.11-0.10.1.0/bin/kafka-topics.sh
+      --create
+      --zookeeper
+      localhost:2181 --replication-factor 1 --partitions 1 --topic SWAT &) && (supervisord -n)"
     healthcheck:
-      test: ['CMD-SHELL', '/opt/kafka_2.11-0.10.1.0/bin/kafka-topics.sh --zookeeper localhost:2181 --list']
+      test:
+        [
+          "CMD-SHELL",
+          "/opt/kafka_2.11-0.10.1.0/bin/kafka-topics.sh --zookeeper localhost:2181 --list",
+        ]
       interval: 20s
       timeout: 5s
       retries: 3
     networks:
       - swat-network
-          
+
   # Jupyter Environment with PySpark
   pyspark:
     image: pyspark
@@ -52,7 +56,7 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
-    depends_on: 
+    depends_on:
       - influxdb
     networks:
       - swat-network
@@ -63,7 +67,7 @@ services:
     container_name: influxdb
     restart: always
     ports:
-     - 8086:8086
+      - 8086:8086
     volumes:
       - influxdb:/var/lib/influxdb
     environment:
@@ -115,19 +119,19 @@ services:
       - swat-network
 
   # Python Environement running a KafkaProducer program
-  producer:      
+  producer:
     image: producer
     container_name: producer
     build: ./kafka
     depends_on:
-      kafka:
-        condition: service_healthy
+      - "kafka"
+        # condition: service_healthy
     networks:
       - swat-network
 
 networks:
   swat-network:
-    
+
 volumes:
   grafana:
   influxdb:
