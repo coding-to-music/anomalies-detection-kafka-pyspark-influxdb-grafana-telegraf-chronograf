@@ -8,6 +8,22 @@ From / By Mohamed Aharrat https://github.com/medaharrat
 
 https://github.com/medaharrat/anomalies-detection
 
+http://localhost:8086/signin (influxdb userid=admin password=admin123)
+
+http://localhost:3000 (Grafana - there are no dashboareds)
+
+http://localhost:8080 (Chronograf - there are no dashboards)
+
+http://localhost:9092 (Kafka - no UI)
+
+http://localhost:8125 (Telegraf - no UI)
+
+http://localhost:8888 (PySpark - no UI)
+
+pyspark crashes connecting to Kafka
+
+There are no dashboards
+
 ## Environment variables:
 
 copy .env-example to .env
@@ -189,4 +205,14 @@ sudo nano /etc/fstab
 # The default is too high at 60
 echo 10 | sudo tee /proc/sys/vm/swappiness
 echo vm.swappiness = 10 | sudo tee -a /etc/sysctl.conf
+```
+
+## Clean Up
+
+```
+docker image prune -a
+
+docker container prune
+
+docker volume prune
 ```
