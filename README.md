@@ -10,8 +10,21 @@ https://github.com/medaharrat/anomalies-detection
 
 ## Environment variables:
 
-```java
+copy .env-example to .env
 
+```java
+cp .env-example .env
+
+# example values:
+
+INFLUXDB_DB=swat
+INFLUXDB_HOST=http://influxdb:8086
+AUTH_TOKEN=iJHZR-dq4I5LIpFZCc5bTUHx-I7dyz29ZTO-B4W5DpU4mhPVDFg-aAb2jK4Vz1C6n0DDb6ddA-bJ3EZAanAOUw==
+DEFAULT_BUCKET=swat
+MONITORING_BUCKET=primary
+DEFAULT_ORGANIZATION=primary
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=admin123
 ```
 
 ## GitHub
