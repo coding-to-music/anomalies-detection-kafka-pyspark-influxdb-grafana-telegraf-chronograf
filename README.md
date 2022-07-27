@@ -79,3 +79,49 @@ Telegraf is a plugin-driven server agent for collecting & reporting metrics. Tel
 ```sh
 sh run.sh
 ```
+
+Getting this output:
+
+```
+[>] Exporting variables
+[>] Creating influxdb directory
+[>] Creating grafana directory
+[>] Creating chronograf directory
+[>] Running docker compose
+Building pyspark
+Step 1/15 : FROM jupyter/pyspark-notebook
+ ---> 458b41649487
+Step 2/15 : COPY . .
+ ---> Using cache
+ ---> 344ec311bab2
+Step 3/15 : RUN python3 -m pip install -r requirements.txt
+ ---> Using cache
+ ---> 8f94e6174a9e
+Step 4/15 : USER root
+ ---> Using cache
+ ---> 633a675fff27
+Step 5/15 : RUN chmod +x spark-submit.sh
+ ---> Using cache
+ ---> bb7e509d3909
+Step 6/15 : RUN echo '[...] Preprocessing data'
+ ---> Using cache
+ ---> 6f0dcc79c1f5
+Step 7/15 : RUN python3 preprocess.py
+ ---> Using cache
+ ---> 13aa0b8e2e19
+Step 8/15 : RUN echo '[...] Fitting models'
+ ---> Using cache
+ ---> 3d24b4575edf
+Step 9/15 : RUN python3 pipeline1_ocsvm.py
+ ---> Using cache
+ ---> d95a0222eb87
+Step 10/15 : RUN python3 pipeline2_iso_log.py
+ ---> Using cache
+ ---> 6503f4bc6625
+Step 11/15 : RUN python3 pipeline3_kmeans.py
+ ---> Using cache
+ ---> c58fd85b167d
+Step 12/15 : RUN python3 pipeline4_dbscan.py
+ ---> Running in e569dfc780c7
+ERROR: Service 'pyspark' failed to build: The command '/bin/bash -o pipefail -c python3 pipeline4_dbscan.py' returned a non-zero code: 137
+```
